@@ -2,6 +2,12 @@ import { chromium, Page, Browser } from 'playwright';
 import minimist from 'minimist';
 import { writeFileSync } from 'fs';
 
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 export interface ActionParam {
     name: string;
     description: string;
@@ -211,10 +217,3 @@ export class BrowserSkill {
     }
 }
 
-if (require.main === module) {
-    const skill = new BrowserSkill(
-        '',
-        ''
-    );
-    skill.run();
-}

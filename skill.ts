@@ -19,7 +19,7 @@ skill.registerAction({
     name: '<action name>',
     description: '<action description>',
     params: [
-        { name: '<param name>', type: '<string | number | boolean>', description: '<param description>' }
+        { name: '<param name>', type: 'string' /* 'string' | 'number' | 'boolean' */, description: '<param description>' }
     ],
     handler: async (page, args) => {
         // handler logic

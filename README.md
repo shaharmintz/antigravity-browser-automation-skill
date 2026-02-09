@@ -85,3 +85,6 @@ npx tsx skill.ts --action fillForm --tabIndex 1 --username "jdoe"
 npx tsx skill.ts --action getAllTabs
 ```
 
+## Examples
+
+Take a look at the [Hacker News example](examples/hacker-news/skill.ts) for a practical implementation.
