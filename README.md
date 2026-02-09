@@ -2,6 +2,10 @@
 
 A lightweight framework for creating browser automation skills using Playwright. Leveraging Antigravity's relience on Playwright for built-in agentic browser capabilities, this template streamlines connecting to an open Chrome instance, managing actions, and auto-generating the SKILL.md file.
 
+## Motivation
+
+By integrating these specialized skills with built-in Antigravity workflows, you can implement complete, powerful agentic solutions that might otherwise require complex custom development. This approach allows you to extend your IDE's capabilities far beyond traditional software development, enabling you to automate interactions with files, web resources, and external data to achieve a wide range of goals efficiently.
+
 ## Features
 
 -   **Seamless Playwright Integration**: Connects to the existing Chrome instance opened by Antigravity via CDP (Chrome DevTools Protocol).
