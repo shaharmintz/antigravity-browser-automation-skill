@@ -16,12 +16,33 @@ export interface ActionParam {
     default?: any;
 }
 
-export interface ActionSchema {
+export type ActionSchema = BrowserActionSchema | BrowserlessActionSchema;
+
+export interface BaseActionSchema {
     name: string;
     description: string;
     params?: ActionParam[];
-    handler: (page: Page, args: any) => Promise<void>;
     hidden?: boolean;
+}
+
+export interface BrowserActionSchema extends BaseActionSchema {
+    browserless?: false;
+    handler: (page: Page, args: any) => Promise<void>;
+}
+
+export interface BrowserlessActionSchema extends BaseActionSchema {
+    browserless: true;
+    handler: ( args: any) => Promise<void>;
+}
+
+export interface ActionRegistrationOptions {
+    tabRequired?: boolean;
+}
+
+export enum BuiltInActions {
+    Help = 'help',
+    GetAllTabs = 'getAllTabs',
+    GenerateSkillMarkdown = 'generateSkillMarkdown'
 }
 
 export class BrowserSkill {
@@ -30,27 +51,30 @@ export class BrowserSkill {
     constructor(private skillName: string, private description: string) {
         // Register default actions
         this.registerAction({
-            name: 'help',
+            name: BuiltInActions.Help,
             description: 'Show help and available actions',
-            handler: async () => this.showHelp()
+            handler: async () => this.showHelp(),
+            browserless: true
         }, {tabRequired: false});
 
         this.registerAction({
-            name: 'getAllTabs',
+            name: BuiltInActions.GetAllTabs,
             description: 'List all open tabs across all browser contexts',
             handler: async (page) => this.getAllTabs(page)
         }, {tabRequired: false});
 
 
          this.registerAction({
-            name: 'generateSkillMarkdown',
+            name: BuiltInActions.GenerateSkillMarkdown,
             description: 'Generate the markdown file for this skill',
-            handler: async (page) => this.generateSkillMarkdown(),
-            hidden: true
+            handler: async () => this.generateSkillMarkdown(),
+            hidden: true,
+            browserless: true
         }, {tabRequired: false});
     }
 
-    public registerAction(schema: ActionSchema, {tabRequired = true} = {}) {
+    public registerAction(schema: ActionSchema,  options: ActionRegistrationOptions = {}) {
+        const {tabRequired = true} = options;
         // If tabRequired is true, and tabIndex is not provided, add a default tabIndex parameter
         if (tabRequired && !schema.params?.some(p => p.name === 'tabIndex')) {
             schema.params = schema.params || [];
@@ -161,6 +185,16 @@ export class BrowserSkill {
                     process.exit(1);
                 }
             }
+        }
+
+        if (action.browserless) {
+            try {
+                await action.handler(argv);
+            } catch (e) {
+                console.error(`Error executing action ${actionName}:`, e);
+                process.exit(1);
+            }
+            return;
         }
 
         // Connect to browser
